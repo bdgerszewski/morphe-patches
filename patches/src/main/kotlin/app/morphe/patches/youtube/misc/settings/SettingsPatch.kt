@@ -191,7 +191,6 @@ val settingsPatch = bytecodePatch(
         addResources("youtube", "misc.settings.settingsPatch")
 
         // Add an "about" preference to the top.
-        if (false) // FIXME: Update this.
         preferences += NonInteractivePreference(
             key = "morphe_settings_screen_00_about",
             icon = "@drawable/morphe_settings_screen_00_about",
@@ -211,7 +210,6 @@ val settingsPatch = bytecodePatch(
         PreferenceScreen.GENERAL_LAYOUT.addPreferences(
             SwitchPreference("morphe_settings_search_history"),
         )
-
 
         PreferenceScreen.GENERAL_LAYOUT.addPreferences(
             if (is_20_31_or_greater) {

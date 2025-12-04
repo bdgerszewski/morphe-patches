@@ -306,11 +306,11 @@ class AboutLinksRoutes {
      * Links to use if fetch links api call fails.
      */
     private static final WebLink[] NO_CONNECTION_STATIC_LINKS = {
-            new WebLink(true, "Morphe.software", "https://morphe.software")
+            new WebLink(true, "Morphe", "https://morphe.software")
     };
 
-    // FIXME
-    private static final String SOCIAL_LINKS_PROVIDER = "https://api.morphi.app/v1";
+    // TODO
+    private static final String SOCIAL_LINKS_PROVIDER = "https://software.morphi.app/v1";
     private static final Route.CompiledRoute GET_SOCIAL = new Route(GET, "/about").compile();
 
     @Nullable
@@ -327,19 +327,27 @@ class AboutLinksRoutes {
             // Check if there is no internet connection.
             if (!Utils.isNetworkConnected()) return NO_CONNECTION_STATIC_LINKS;
 
-            HttpURLConnection connection = Requester.getConnectionFromCompiledRoute(SOCIAL_LINKS_PROVIDER, GET_SOCIAL);
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-            Logger.printDebug(() -> "Fetching social links from: " + connection.getURL());
+            JSONObject json;
 
-            // Do not show an exception toast if the server is down
-            final int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                Logger.printDebug(() -> "Failed to get social links. Response code: " + responseCode);
-                return NO_CONNECTION_STATIC_LINKS;
+            if (true) {
+                json = new JSONObject(ABOUT_JSON_TEMPORARY);
+            } else {
+                HttpURLConnection connection = Requester.getConnectionFromCompiledRoute(SOCIAL_LINKS_PROVIDER, GET_SOCIAL);
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                Logger.printDebug(() -> "Fetching social links from: " + connection.getURL());
+
+
+                // Do not show an exception toast if the server is down
+                final int responseCode = connection.getResponseCode();
+                if (responseCode != 200) {
+                    Logger.printDebug(() -> "Failed to get social links. Response code: " + responseCode);
+                    return NO_CONNECTION_STATIC_LINKS;
+                }
+
+                json = Requester.parseJSONObjectAndDisconnect(connection);
             }
 
-            JSONObject json = Requester.parseJSONObjectAndDisconnect(connection);
             aboutLogoUrl = json.getJSONObject("branding").getString("logo");
 
             List<WebLink> links = new ArrayList<>();
@@ -348,9 +356,7 @@ class AboutLinksRoutes {
             for (int i = 0, length = donations.length(); i < length; i++) {
                 WebLink link = new WebLink(donations.getJSONObject(i));
                 if (link.preferred) {
-                    // This could be localized, but TikTok does not support localized resources.
-                    // All link names returned by the api are also non localized.
-                    link.name = "Donate";
+                    link.name = str("morphe_settings_about_donate");
                     links.add(link);
                 }
             }
@@ -375,4 +381,80 @@ class AboutLinksRoutes {
 
         return NO_CONNECTION_STATIC_LINKS;
     }
+
+    // TODO: Eventually move this to a web server.
+    private static final String ABOUT_JSON_TEMPORARY = """
+        {
+          "name": "Morphe",
+          "branding": {
+            "logo": "https://raw.githubusercontent.com/MorpheApp/morphe-branding/main/assets/morphe-logo/morphe_logo.svg"
+          },
+          "contact": {
+            "email": "contact@morphe.software"
+          },
+          "socials": [
+            {
+              "name": "Website",
+              "url": "https://Morphe.software",
+              "preferred": true
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/MorpheApp",
+              "preferred": false
+            },
+            {
+              "name": "Twitter",
+              "url": "https://twitter.com/MorpheApp",
+              "preferred": false
+            },
+            {
+              "name": "Reddit",
+              "url": "https://www.reddit.com/r/Morphe",
+              "preferred": false
+            }
+          ],
+          "donations": {
+            "wallets": [
+            {
+                "network": "Ethereum",
+                "currency_code": "ETH",
+                "address": "XXX",
+                "preferred": true
+              },
+              {
+                "network": "Bitcoin",
+                "currency_code": "BTC",
+                "address": "XXX",
+                "preferred": false
+              },
+              {
+                "network": "Dogecoin",
+                "currency_code": "DOGE",
+                "address": "XXX",
+                "preferred": false
+              },
+              {
+                "network": "Litecoin",
+                "currency_code": "LTC",
+                "address": "XXX",
+                "preferred": false
+              },
+              {
+                "network": "Monero",
+                "currency_code": "XMR",
+                "address": "XXX",
+                "preferred": false
+              }
+            ],
+            "links": [
+              {
+                "name": "Donate",
+                "url": "https://morphe.software/donate",
+                "preferred": true
+              }
+            ]
+          }
+        }
+    """;
 }

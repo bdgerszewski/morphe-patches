@@ -90,7 +90,6 @@ val settingsPatch = bytecodePatch(
         addResources("shared", "misc.debugging.enableDebuggingPatch")
 
         // Add an "About" preference to the top.
-        if (false) // FIXME: Update this.
         preferences += NonInteractivePreference(
             key = "morphe_settings_music_screen_0_about",
             summaryKey = null,
