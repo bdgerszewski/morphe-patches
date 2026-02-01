@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-02-01T18:41:24",
-  "description": "## [1.0.1](https://github.com/bdgerszewski/morphe-patches/compare/v1.0.0...v1.0.1) (2026-02-01)\n\n\n### Bug Fixes\n\n* Show new speed in tap-hold FF tooltip ([93848a0](https://github.com/bdgerszewski/morphe-patches/commit/93848a0f6181c0b777005ac37d50a857626a72b4))",
-  "download_url": "https://github.com/bdgerszewski/morphe-patches/releases/download/v1.0.1/patches-1.0.1.mpp",
+  "created_at": "2026-02-01T19:02:21",
+  "description": "## [1.0.2](https://github.com/bdgerszewski/morphe-patches/compare/v1.0.1...v1.0.2) (2026-02-01)\n\n\n### Bug Fixes\n\n* another try ([1de987a](https://github.com/bdgerszewski/morphe-patches/commit/1de987add0eebf245ef28b3169eb2846d683ff83))",
+  "download_url": "https://github.com/bdgerszewski/morphe-patches/releases/download/v1.0.2/patches-1.0.2.mpp",
   "signature_download_url": "",
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

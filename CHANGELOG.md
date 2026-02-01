@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/bdgerszewski/morphe-patches/compare/v1.0.1...v1.0.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* another try ([1de987a](https://github.com/bdgerszewski/morphe-patches/commit/1de987add0eebf245ef28b3169eb2846d683ff83))
+
 ## [1.0.1](https://github.com/bdgerszewski/morphe-patches/compare/v1.0.0...v1.0.1) (2026-02-01)
 
 
