@@ -88,11 +88,7 @@ internal object SpeedLimiterLegacyFingerprint : Fingerprint(
  * This text appears when the user tap-and-holds to play at fast speed.
  */
 internal object SpeedmasterEduTextFingerprint : Fingerprint(
-    returnType = "L",
     filters = listOf(
-        resourceLiteral(ResourceType.STRING, "speedmaster_edu_text"),
-        methodCall(
-            smali = "Landroid/content/Context;->getString(I)Ljava/lang/String;"
-        )
+        resourceLiteral(ResourceType.STRING, "speedmaster_edu_text")
     )
 )

@@ -23,10 +23,13 @@ import app.morphe.patches.youtube.misc.recyclerviewtree.hook.addRecyclerViewTree
 import app.morphe.patches.youtube.misc.recyclerviewtree.hook.recyclerViewTreeHookPatch
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.video.speed.settingsMenuVideoSpeedGroup
+import app.morphe.util.getReference
+import app.morphe.util.indexOfFirstInstructionOrThrow
 import app.morphe.util.indexOfFirstLiteralInstructionOrThrow
 import app.morphe.util.returnEarly
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 import com.android.tools.smali.dexlib2.immutable.ImmutableField
 
 private const val FILTER_CLASS_DESCRIPTOR =
@@ -185,8 +188,12 @@ internal val customPlaybackSpeedPatch = bytecodePatch(
             // Patch the tooltip text (shows "2x" by default).
             SpeedmasterEduTextFingerprint.let {
                 it.method.apply {
-                    // The getString call is the second filter match (index 1).
-                    val getStringIndex = it.instructionMatches[1].index
+                    // The resource literal is the first (and only) filter match.
+                    val resourceLiteralIndex = it.instructionMatches.first().index
+                    // Find the getString call after the resource literal.
+                    val getStringIndex = indexOfFirstInstructionOrThrow(resourceLiteralIndex) {
+                        getReference<MethodReference>()?.name == "getString"
+                    }
                     // move-result-object is the next instruction after getString.
                     val resultRegister = getInstruction<OneRegisterInstruction>(getStringIndex + 1).registerA
 

@@ -32,3 +32,8 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# My stuff
+.context/
+patches/bin/
+patches/stub/bin/
