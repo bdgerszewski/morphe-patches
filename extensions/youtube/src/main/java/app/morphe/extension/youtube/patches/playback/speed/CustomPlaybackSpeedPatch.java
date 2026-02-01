@@ -120,6 +120,21 @@ public class CustomPlaybackSpeedPatch {
         return TAP_AND_HOLD_SPEED;
     }
 
+    /**
+     * Injection point.
+     * Returns the formatted tap-and-hold speed text for the tooltip (e.g., "2x", "3.5x").
+     */
+    public static String tapAndHoldSpeedText() {
+        float speed = TAP_AND_HOLD_SPEED;
+        // Format nicely: show "2x" for whole numbers, "3.5x" for decimals
+        if (speed == (int) speed) {
+            return ((int) speed) + "x";
+        }
+        // Remove trailing zeros after decimal
+        String formatted = String.format("%.2f", speed).replaceAll("0+$", "").replaceAll("\\.$", "");
+        return formatted + "x";
+    }
+
     private static void showInvalidCustomSpeedToast() {
         Utils.showToastLong(str("morphe_custom_playback_speeds_invalid", PLAYBACK_SPEED_MAXIMUM));
     }

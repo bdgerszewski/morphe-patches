@@ -82,3 +82,17 @@ internal object SpeedLimiterLegacyFingerprint : Fingerprint(
         Opcode.INVOKE_STATIC,
     )
 )
+
+/**
+ * Matches where the speedmaster tooltip text ("2x") is loaded.
+ * This text appears when the user tap-and-holds to play at fast speed.
+ */
+internal object SpeedmasterEduTextFingerprint : Fingerprint(
+    returnType = "L",
+    filters = listOf(
+        resourceLiteral(ResourceType.STRING, "speedmaster_edu_text"),
+        methodCall(
+            smali = "Landroid/content/Context;->getString(I)Ljava/lang/String;"
+        )
+    )
+)

@@ -166,6 +166,7 @@ internal val customPlaybackSpeedPatch = bytecodePatch(
         // region Custom tap and hold 2x speed.
 
         if (is_19_47_or_greater) {
+            // Patch the speed value (default 2.0f).
             CustomTapAndHoldFingerprint.let {
                 it.method.apply {
                     val index = it.instructionMatches.first().index
@@ -176,6 +177,24 @@ internal val customPlaybackSpeedPatch = bytecodePatch(
                         """
                             invoke-static {}, $EXTENSION_CLASS_DESCRIPTOR->tapAndHoldSpeed()F
                             move-result v$register
+                        """
+                    )
+                }
+            }
+
+            // Patch the tooltip text (shows "2x" by default).
+            SpeedmasterEduTextFingerprint.let {
+                it.method.apply {
+                    // The getString call is the second filter match (index 1).
+                    val getStringIndex = it.instructionMatches[1].index
+                    // move-result-object is the next instruction after getString.
+                    val resultRegister = getInstruction<OneRegisterInstruction>(getStringIndex + 1).registerA
+
+                    addInstructions(
+                        getStringIndex + 2,
+                        """
+                            invoke-static {}, $EXTENSION_CLASS_DESCRIPTOR->tapAndHoldSpeedText()Ljava/lang/String;
+                            move-result-object v$resultRegister
                         """
                     )
                 }
