@@ -10,8 +10,11 @@ import app.morphe.patcher.opcode
 import app.morphe.patcher.string
 import app.morphe.patches.shared.misc.mapping.ResourceType
 import app.morphe.patches.shared.misc.mapping.resourceLiteral
+import app.morphe.util.getReference
+import app.morphe.util.indexOfFirstInstruction
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
+import com.android.tools.smali.dexlib2.iface.reference.StringReference
 
 internal object GetOldPlaybackSpeedsFingerprint : Fingerprint(
     parameters = listOf("[L", "I"),
@@ -88,7 +91,11 @@ internal object SpeedLimiterLegacyFingerprint : Fingerprint(
  * This text appears when the user tap-and-holds to play at fast speed.
  */
 internal object SpeedmasterEduTextFingerprint : Fingerprint(
-    filters = listOf(
-        resourceLiteral(ResourceType.STRING, "speedmaster_edu_text")
-    )
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "V",
+    custom = { method, _ ->
+        method.name == "a" && method.indexOfFirstInstruction {
+            getReference<StringReference>()?.string == "player_overlay_player_seek_edu"
+        } >= 0
+    }
 )

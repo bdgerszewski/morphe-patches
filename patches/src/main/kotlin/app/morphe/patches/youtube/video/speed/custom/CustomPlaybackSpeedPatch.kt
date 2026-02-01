@@ -8,6 +8,8 @@ import app.morphe.patcher.extensions.InstructionExtensions.instructions
 import app.morphe.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableField.Companion.toMutable
+import app.morphe.patches.shared.misc.mapping.ResourceType
+import app.morphe.patches.shared.misc.mapping.getResourceId
 import app.morphe.patches.shared.misc.mapping.resourceMappingPatch
 import app.morphe.patches.shared.misc.settings.preference.InputType
 import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
@@ -186,25 +188,25 @@ internal val customPlaybackSpeedPatch = bytecodePatch(
             }
 
             // Patch the tooltip text (shows "2x" by default).
-            SpeedmasterEduTextFingerprint.let {
-                it.method.apply {
-                    // The resource literal is the first (and only) filter match.
-                    val resourceLiteralIndex = it.instructionMatches.first().index
-                    // Find the getString call after the resource literal.
-                    val getStringIndex = indexOfFirstInstructionOrThrow(resourceLiteralIndex) {
-                        getReference<MethodReference>()?.name == "getString"
-                    }
-                    // move-result-object is the next instruction after getString.
-                    val resultRegister = getInstruction<OneRegisterInstruction>(getStringIndex + 1).registerA
-
-                    addInstructions(
-                        getStringIndex + 2,
-                        """
-                            invoke-static {}, $EXTENSION_CLASS_DESCRIPTOR->tapAndHoldSpeedText()Ljava/lang/String;
-                            move-result-object v$resultRegister
-                        """
-                    )
+            // This fingerprint may not match on all versions.
+            SpeedmasterEduTextFingerprint.methodOrNull?.apply {
+                // Find the resource ID for speedmaster_edu_text.
+                val resourceId = getResourceId(ResourceType.STRING, "speedmaster_edu_text")
+                val resourceIdIndex = indexOfFirstLiteralInstructionOrThrow(resourceId)
+                // Find the getString call after the resource literal.
+                val getStringIndex = indexOfFirstInstructionOrThrow(resourceIdIndex) {
+                    getReference<MethodReference>()?.name == "getString"
                 }
+                // move-result-object is the next instruction after getString.
+                val resultRegister = getInstruction<OneRegisterInstruction>(getStringIndex + 1).registerA
+
+                addInstructions(
+                    getStringIndex + 2,
+                    """
+                        invoke-static {}, $EXTENSION_CLASS_DESCRIPTOR->tapAndHoldSpeedText()Ljava/lang/String;
+                        move-result-object v$resultRegister
+                    """
+                )
             }
         }
 
