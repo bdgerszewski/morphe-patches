@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/bdgerszewski/morphe-patches/compare/v1.0.0...v1.0.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* Show new speed in tap-hold FF tooltip ([93848a0](https://github.com/bdgerszewski/morphe-patches/commit/93848a0f6181c0b777005ac37d50a857626a72b4))
+
 # 1.0.0 (2026-02-01)
 
 
